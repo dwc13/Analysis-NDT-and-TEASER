@@ -9,7 +9,7 @@
 ## TO RUN:
 
 ```
-  $ ./ndt ndt[^note]
-```
+  $ ./ndt ndt
+```[^note]
 
 [^note]: This is ran inside the MATLAB code to ensure correct file names.
