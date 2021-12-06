@@ -3,7 +3,7 @@ clc
 addpath('./TEASER-plusplus/build/matlab/')
 
 % Display Source Point Cloud
-ptCloudSrc = pcread('/home/dom/Desktop/test3pcd/1637535759.680210000.pcd');
+ptCloudSrc = pcread('./record3pcd/1637535759.680210000.pcd');
 % figure(1)
 % pcshow(ptCloudSrc,'MarkerSize',20); title('Source');
 
