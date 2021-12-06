@@ -1,37 +1,48 @@
-%% Point Cloud
-% -----------------------------------------------------------------------------
-% Ground truth Point Cloud Image
-ptCloudGround = pcread('./1637535634.411389000.pcd');
-figure(1)
-pcshow(ptCloudGround,'MarkerSize',20); title('Ground');
+%% NDT
+clc
 
-% -----------------------------------------------------------------------------
-% Rotating Ground to make an Unmatch Point Cloud
+% Ground Point Cloud
+ptCloudSrc = pcread('./record3pcd/1637535759.680210000.pcd');
+
+% Rotating Source to create new Point Cloud
 theta = pi/4;
 rot = [cos(theta) sin(theta) 0; ...
     -sin(theta) cos(theta) 0; ...
     0 0 1];
 tform = [0, 0, 0];
 D = rigid3d(rot, tform);
-ptCloudUnmatch = pctransform(ptCloudGround, D);
+ptCloudRef = pctransform(ptCloudSrc, D);
 
-% ptCloudUnmatch = pcread('./1637535634.411389000-transform.pcd');
+% Downsample Point Clouds
+% ptCloudSrcDS = pcdownsample(ptCloudSrc,'gridAverage', 0.3);
+% ptCloudRefDS = pcdownsample(ptCloudRef,'gridAverage', 0.3);
 
-figure(2)
-% subplot(2,3,2); pcshow(ptCloudUnmatch); title('Unmatch');
-pcshow(ptCloudUnmatch,'MarkerSize',20); title('Unmatch');
+% Write Downsample Point Cloud to PCD Files
+% pcwrite(ptCloudSrcDS, './ptCloudSrc.pcd');
+% pcwrite(ptCloudRefDS, './ptCloudRef.pcd');
+pcwrite(ptCloudSrc, './ptCloudSrc.pcd');
+pcwrite(ptCloudRef, './ptCloudRef.pcd');
 
-% -----------------------------------------------------------------------------
-% Displaying both Ground and Unmatch Point Cloud
-figure(3)
-pcshowpair(ptCloudGround, ptCloudUnmatch,'MarkerSize',20); title('Ground and Unmatch');
+% Display Source Point Cloud
+% figure(1)
+% pcshow(ptCloudSrcDS,'MarkerSize',20); title('Source');
+% pcshow(ptCloudSrc,'MarkerSize',20); title('Source');
 
-% Write to PCD File
-pcwrite(ptCloudUnmatch, './1637535634.411389000-transform.pcd');
+% Display Reference Point Cloud
+% figure(2)
+% pcshow(ptCloudRefDS,'MarkerSize',20); title('Reference');
+% pcshow(ptCloudRef,'MarkerSize',20); title('Reference');
 
-% Run NDT through command prompt
+% Displaying both Source and Reference Point Cloud
+% figure(3)
+% pcshowpair(ptCloudSrcDS, ptCloudRefDS,'MarkerSize',20);
+% pcshowpair(ptCloudSrc, ptCloudRef,'MarkerSize',20); title('Source and Reference');
 
-%%
-ptCloudNewTransform = pcread('./transformed.pcd');
-figure(4)
-pcshow(ptCloudNewTransform, 'MarkerSize', 20); title('transform');
+% NDT System Command
+status = system('./ndt ndt'); % Outputs transformedCloud.pcd file
+
+% Display Transform PCD file from NDT
+ptCloudNewTransform = pcread('./transformedCloud.pcd');
+% figure(4)
+% pcshowpair(ptCloudNewTransform, ptCloudRefDS, 'MarkerSize', 20); title('NDT Registered');
+% pcshowpair(ptCloudNewTransform, ptCloudRef, 'MarkerSize', 20); title('NDT Registered');
